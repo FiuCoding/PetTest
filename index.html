@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#120d22" />
+    <meta
+      name="description"
+      content="上传一张宠物照片，回答七道轻松问题，生成一份属于你们的主宠缘分娱乐报告。"
+    />
+    <meta name="color-scheme" content="dark" />
+    <title>你家宠物是什么命？· 宠缘签</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23170f2b'/%3E%3Cpath d='M20 34c0-8 5-15 12-15s12 7 12 15c0 5-5 9-12 9s-12-4-12-9Z' fill='%23e6c17c'/%3E%3Ccircle cx='15' cy='25' r='5' fill='%23e6c17c'/%3E%3Ccircle cx='49' cy='25' r='5' fill='%23e6c17c'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="data.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <div class="ambient" aria-hidden="true">
+      <div class="ambient-glow ambient-glow--one"></div>
+      <div class="ambient-glow ambient-glow--two"></div>
+      <div class="starfield" id="starfield"></div>
+      <div class="grain"></div>
+    </div>
+
+    <svg class="svg-defs" aria-hidden="true">
+      <symbol id="icon-camera" viewBox="0 0 24 24">
+        <path d="M4 8.5h3l1.4-2.2h7.2L17 8.5h3v10H4v-10Z" />
+        <circle cx="12" cy="13.2" r="3.2" />
+      </symbol>
+      <symbol id="icon-image" viewBox="0 0 24 24">
+        <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+        <circle cx="8.5" cy="9.5" r="1.4" />
+        <path d="m20.5 15.5-4.7-4.8L5 21" />
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="4.5" y="10" width="15" height="10" rx="2.5" />
+        <path d="M8 10V7.5a4 4 0 0 1 8 0V10M12 14v2.5" />
+      </symbol>
+      <symbol id="icon-arrow-left" viewBox="0 0 24 24">
+        <path d="M19 12H5M11 18l-6-6 6-6" />
+      </symbol>
+      <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </symbol>
+      <symbol id="icon-sparkle" viewBox="0 0 24 24">
+        <path d="M12 2.5c.7 5.4 3.6 8.3 9 9-5.4.7-8.3 3.6-9 9-.7-5.4-3.6-8.3-9-9 5.4-.7 8.3-3.6 9-9Z" />
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
+      </symbol>
+      <symbol id="icon-share" viewBox="0 0 24 24">
+        <circle cx="18" cy="5" r="2.6" />
+        <circle cx="6" cy="12" r="2.6" />
+        <circle cx="18" cy="19" r="2.6" />
+        <path d="m8.4 10.7 7.2-4.3M8.4 13.3l7.2 4.3" />
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18" />
+      </symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24">
+        <path d="M20 7v5h-5M4 17v-5h5" />
+        <path d="M6.1 8.3A7.5 7.5 0 0 1 19.8 12M4.2 12a7.5 7.5 0 0 0 13.7 3.7" />
+      </symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24">
+        <path d="m6 9 6 6 6-6" />
+      </symbol>
+      <symbol id="icon-paw" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="16" rx="5.2" ry="4.2" />
+        <ellipse cx="5.1" cy="10.6" rx="2.1" ry="2.8" transform="rotate(-25 5.1 10.6)" />
+        <ellipse cx="9.2" cy="6.8" rx="2.1" ry="2.9" transform="rotate(-8 9.2 6.8)" />
+        <ellipse cx="14.8" cy="6.8" rx="2.1" ry="2.9" transform="rotate(8 14.8 6.8)" />
+        <ellipse cx="18.9" cy="10.6" rx="2.1" ry="2.8" transform="rotate(25 18.9 10.6)" />
+      </symbol>
+      <symbol id="icon-info" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 10.5V17M12 7.2v.1" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="m5 12.5 4.4 4.4L19 7.2" />
+      </symbol>
+    </svg>
+
+    <header class="site-header">
+      <button class="brand" type="button" id="brand-home" aria-label="宠缘签首页">
+        <span class="brand-mark" aria-hidden="true">宠</span>
+        <span class="brand-copy">
+          <span class="brand-en">PAW ORACLE</span>
+          <strong>宠缘签</strong>
+        </span>
+      </button>
+      <div class="header-note">
+        <span class="header-dot" aria-hidden="true"></span>
+        主宠缘分 · 娱乐解读
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="view home-view is-active" id="view-home" aria-labelledby="home-title">
+        <div class="home-hero">
+          <div class="hero-copy">
+            <p class="kicker"><span></span> 主宠缘分测试 · 第 01 期</p>
+            <h1 id="home-title">你家宠物<br /><em>是什么命？</em></h1>
+            <p class="hero-subtitle">有人养宠物，有人是被自己的<br class="mobile-break" />小祖宗选中的。</p>
+            <p class="hero-description">
+              上传一张照片，回答几个问题，看看它究竟是来给你带财、带好运，还是专门来治愈你的。
+            </p>
+            <div class="hero-tags" aria-label="测试悬念">
+              <span><i aria-hidden="true">✦</i> 天选招财体质？</span>
+              <span><i aria-hidden="true">☾</i> 主宠前世缘分？</span>
+              <span><i aria-hidden="true">✧</i> 你的专属幸运搭子？</span>
+            </div>
+            <button class="btn btn-primary hero-cta" type="button" data-action="start">
+              <span>开始测测我的毛孩子</span>
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+            </button>
+            <p class="micro-disclaimer">趣味娱乐测试，不代表真实命运预测。</p>
+          </div>
+
+          <div class="hero-art" aria-hidden="true">
+            <div class="oracle-stage">
+              <div class="orbit orbit--outer"></div>
+              <div class="orbit orbit--inner"></div>
+              <span class="rune rune--one">☾</span>
+              <span class="rune rune--two">✦</span>
+              <span class="rune rune--three">✧</span>
+              <div class="oracle-card">
+                <div class="card-corner card-corner--tl"></div>
+                <div class="card-corner card-corner--tr"></div>
+                <div class="card-corner card-corner--bl"></div>
+                <div class="card-corner card-corner--br"></div>
+                <div class="card-topline"><span>PAW ORACLE</span><span>NO. 07</span></div>
+                <span class="card-seal">缘</span>
+                <div class="card-art">
+                  <svg viewBox="0 0 300 320" role="img" aria-label="月光下的猫咪剪影">
+                    <defs>
+                      <radialGradient id="hero-halo" cx="50%" cy="45%" r="52%">
+                        <stop offset="0%" stop-color="#e9c886" stop-opacity=".3" />
+                        <stop offset="70%" stop-color="#8f6daf" stop-opacity=".1" />
+                        <stop offset="100%" stop-color="#8f6daf" stop-opacity="0" />
+                      </radialGradient>
+                    </defs>
+                    <circle cx="150" cy="142" r="112" fill="url(#hero-halo)" />
+                    <path d="M63 190c-28-39-17-91 26-114-11 37 9 72 43 82-19 24-45 41-69 32Z" fill="none" stroke="#d9b974" stroke-opacity=".28" />
+                    <circle cx="150" cy="141" r="92" fill="none" stroke="#e6c783" stroke-opacity=".2" stroke-dasharray="1 7" />
+                    <g fill="none" stroke="#e6c783" stroke-opacity=".12">
+                      <circle cx="150" cy="141" r="77" />
+                      <path d="M35 138h22M243 138h22M150 20v18M150 246v18" />
+                    </g>
+                    <g>
+                      <path d="M91 281c1-67 26-113 59-113s58 46 59 113H91Z" fill="#171026" stroke="#e7c88e" stroke-width="1.6" />
+                      <path d="M103 161c-18-8-28-27-28-49 0-39 32-70 75-70s75 31 75 70c0 22-10 41-28 49" fill="#171026" stroke="#e7c88e" stroke-width="1.6" />
+                      <path d="m110 113-10-43 36 27M190 113l10-43-36 27" fill="#171026" stroke="#e7c88e" stroke-width="1.6" stroke-linejoin="round" />
+                      <path d="M131 140c3 2 7 2 10 0M160 140c3 2 7 2 10 0" stroke="#e7c88e" stroke-width="1.6" stroke-linecap="round" />
+                      <path d="m147 157 4 3 4-3M150 160v7M143 172c5 4 10 4 15 0" stroke="#d3ac72" stroke-width="1.5" stroke-linecap="round" />
+                      <path d="M91 278c-22-10-31-32-23-51 5-11 16-14 24-7M238 278c20-4 31-20 28-36" stroke="#e7c88e" stroke-opacity=".6" stroke-width="1.4" stroke-linecap="round" />
+                      <path d="M126 211c5-6 12-6 17 0M158 211c5-6 12-6 17 0" stroke="#e7c88e" stroke-opacity=".18" stroke-linecap="round" />
+                      <circle cx="96" cy="217" r="2.5" fill="#e7c88e" fill-opacity=".35" />
+                      <circle cx="205" cy="197" r="2" fill="#e7c88e" fill-opacity=".3" />
+                    </g>
+                    <g fill="#e7c88e">
+                      <path d="m240 79 2.4 7.2 7.2 2.4-7.2 2.4-2.4 7.2-2.4-7.2-7.2-2.4 7.2-2.4 2.4-7.2Z" opacity=".75" />
+                      <path d="m50 63 1.4 4.2 4.2 1.4-4.2 1.4-1.4 4.2-1.4-4.2-4.2-1.4 4.2-1.4 1.4-4.2Z" opacity=".45" />
+                      <circle cx="232" cy="191" r="1.8" opacity=".45" />
+                      <circle cx="70" cy="243" r="2.2" opacity=".4" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="card-caption">
+                  <p>今日缘签</p>
+                  <h2>被偏爱者<br /><em>自带好运</em></h2>
+                  <small>FOR THE ONE WHO<br />WAS CHOSEN</small>
+                </div>
+                <div class="card-bottomline"><span>✦</span><span>缘分正在抵达</span><span>✦</span></div>
+              </div>
+              <div class="floating-card floating-card--one">
+                <span>✦</span>
+                <div><b>好运检测中</b><small>100% 毛茸茸</small></div>
+              </div>
+              <div class="floating-card floating-card--two">
+                <span>☾</span>
+                <div><b>主宠缘签</b><small>仅此一份</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-ritual">
+          <div class="ritual-heading">
+            <p class="kicker"><span></span> 缘签怎么来</p>
+            <h2>一张照片，七道题，<br /><em>收下你们的缘签。</em></h2>
+          </div>
+          <div class="ritual-grid">
+            <article class="ritual-card">
+              <span class="ritual-number">01</span>
+              <div class="ritual-icon"><svg class="icon" aria-hidden="true"><use href="#icon-camera"></use></svg></div>
+              <h3>放一张它的照片</h3>
+              <p>照片只留在你的设备里，用来生成这份专属报告。</p>
+            </article>
+            <article class="ritual-card">
+              <span class="ritual-number">02</span>
+              <div class="ritual-icon"><svg class="icon" aria-hidden="true"><use href="#icon-sparkle"></use></svg></div>
+              <h3>凭直觉选七道题</h3>
+              <p>关于它的脾气，也关于养宠之后悄悄变化的你。</p>
+            </article>
+            <article class="ritual-card">
+              <span class="ritual-number">03</span>
+              <div class="ritual-icon"><svg class="icon" aria-hidden="true"><use href="#icon-paw"></use></svg></div>
+              <h3>收下主宠缘签</h3>
+              <p>得到命格、羁绊指数和一张能保存的 9:16 命格卡。</p>
+            </article>
+          </div>
+          <blockquote class="manifesto">
+            <span class="manifesto-mark" aria-hidden="true">“</span>
+            <p>它未必改变你的命运，<br />却悄悄改变了你过日子的方式。</p>
+            <cite>宠缘签 · 主宠缘分观察手记</cite>
+            <button class="btn btn-outline" type="button" data-action="start">看看我家主子的命格</button>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="view flow-view" id="view-upload" aria-labelledby="upload-title" hidden>
+        <div class="flow-shell">
+          <button class="back-link" type="button" data-action="go-home">
+            <svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg>
+            回到首页
+          </button>
+          <div class="step-rail" aria-label="测试进度：第 1 步，共 3 步">
+            <span class="step-rail__item is-current"><b>01</b> 照片</span>
+            <i></i>
+            <span class="step-rail__item"><b>02</b> 应答</span>
+            <i></i>
+            <span class="step-rail__item"><b>03</b> 缘签</span>
+          </div>
+          <header class="flow-heading">
+            <p class="kicker"><span></span> STEP 01 · 缘起</p>
+            <h2 id="upload-title">先让我看看<br /><em>这位小祖宗</em></h2>
+            <p>猫、狗、兔子、仓鼠……只要是你的毛孩子，都可以。</p>
+          </header>
+
+          <div class="upload-card">
+            <div class="upload-empty" id="upload-empty">
+              <div class="upload-orbit" aria-hidden="true">
+                <span>✦</span>
+                <svg class="icon"><use href="#icon-paw"></use></svg>
+              </div>
+              <h3>把它的照片放进来</h3>
+              <p>最好能看清它的小脸，让这份缘签更有你们的样子。</p>
+              <div class="upload-actions">
+                <button class="btn btn-upload-primary" type="button" data-pick="camera">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-camera"></use></svg>
+                  立即拍摄
+                </button>
+                <button class="btn btn-upload-secondary" type="button" data-pick="gallery">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-image"></use></svg>
+                  从相册选择
+                </button>
+              </div>
+              <p class="privacy-note">
+                <svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg>
+                照片仅在当前设备本地处理，不会上传或长期保存
+              </p>
+              <p class="camera-fallback">若设备不支持直接拍摄，会自动打开文件选择。</p>
+            </div>
+
+            <div class="photo-preview" id="photo-preview" hidden>
+              <div class="photo-preview__frame">
+                <img id="photo-img" alt="待确认的宠物照片预览" />
+                <span class="frame-corner frame-corner--tl"></span>
+                <span class="frame-corner frame-corner--tr"></span>
+                <span class="frame-corner frame-corner--bl"></span>
+                <span class="frame-corner frame-corner--br"></span>
+                <span class="preview-label">YOUR LITTLE ORACLE</span>
+              </div>
+              <p class="photo-status" id="photo-status" aria-live="polite">照片已经就位，看看是不是这位小祖宗。</p>
+              <div class="photo-secondary-actions">
+                <button class="btn btn-quiet" type="button" data-pick="camera">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-refresh"></use></svg>
+                  重新拍摄
+                </button>
+                <button class="btn btn-quiet" type="button" data-pick="gallery">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-image"></use></svg>
+                  更换照片
+                </button>
+              </div>
+              <button class="btn btn-primary btn-full" type="button" id="confirm-photo">
+                <span>确认这张照片</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+              </button>
+              <p class="privacy-note privacy-note--dark">
+                <svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg>
+                点击确认即表示同意照片仅在本机用于本次报告与海报
+              </p>
+            </div>
+          </div>
+          <p class="flow-footnote">不是 AI 面相识别，也不是科学心理测量。答案与照片只用来完成这份娱乐向缘签。</p>
+        </div>
+        <input id="camera-input" class="visually-hidden" type="file" accept="image/*" capture="environment" aria-label="拍摄宠物照片" tabindex="-1" />
+        <input id="gallery-input" class="visually-hidden" type="file" accept="image/*" aria-label="从相册选择宠物照片" tabindex="-1" />
+      </section>
+
+      <section class="view transition-view" id="view-transition" aria-labelledby="transition-title" hidden>
+        <div class="transition-shell">
+          <div class="transition-portrait">
+            <img id="transition-photo" alt="" />
+            <div class="transition-ring transition-ring--one"></div>
+            <div class="transition-ring transition-ring--two"></div>
+            <span class="transition-star transition-star--one">✦</span>
+            <span class="transition-star transition-star--two">✧</span>
+            <span class="transition-star transition-star--three">☾</span>
+          </div>
+          <p class="kicker"><span></span> READING THE BOND</p>
+          <h2 id="transition-title">正在读取你和它<br />之间的缘分……</h2>
+          <p class="transition-copy">看看那些饭点、门口和深夜里的陪伴，会拼出怎样的答案。</p>
+          <div class="reading-list" aria-hidden="true">
+            <span><i></i> 对齐日常默契</span>
+            <span><i></i> 辨认好运气质</span>
+            <span><i></i> 落笔主宠缘签</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="view flow-view quiz-view" id="view-quiz" aria-labelledby="quiz-question" hidden>
+        <div class="flow-shell flow-shell--quiz">
+          <div class="quiz-topline">
+            <button class="back-link" type="button" id="quiz-prev" aria-label="返回上一题">
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow-left"></use></svg>
+              上一题
+            </button>
+            <span class="quiz-counter"><b id="quiz-step">1</b> / 7</span>
+          </div>
+          <div class="progress-wrap">
+            <div
+              class="progress-track"
+              id="quiz-progress"
+              role="progressbar"
+              aria-valuemin="1"
+              aria-valuemax="7"
+              aria-valuenow="1"
+              aria-label="答题进度"
+            >
+              <i id="quiz-progress-bar"></i>
+            </div>
+            <div class="progress-meta"><span id="quiz-progress-label">第 1 题 · 共 7 题</span><span id="quiz-percent">14%</span></div>
+          </div>
+          <div class="quiz-card">
+            <div class="quiz-card__head">
+              <p class="quiz-tag" id="quiz-tag">它的日常</p>
+              <p class="quiz-hint" id="quiz-hint">凭第一感觉选，不用想太久。</p>
+            </div>
+            <h2 id="quiz-question">你家主子平时最像哪种生物？</h2>
+            <div class="quiz-options" id="quiz-options" role="radiogroup" aria-labelledby="quiz-question"></div>
+            <div class="quiz-actions">
+              <div class="quiz-dots" id="quiz-dots" aria-hidden="true"></div>
+              <button class="btn btn-primary" type="button" id="quiz-next" disabled>
+                <span>下一题</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+              </button>
+            </div>
+          </div>
+          <p class="flow-footnote">没有正确答案，越接近日常，缘签越像你们。</p>
+        </div>
+      </section>
+
+      <section class="view result-view" id="view-result" aria-labelledby="result-name" hidden>
+        <div class="result-shell">
+          <header class="result-topline">
+            <div>
+              <p class="kicker"><span></span> YOUR PET ORACLE</p>
+              <h1>主宠缘分报告</h1>
+            </div>
+            <button class="text-button" type="button" data-open-info>
+              <svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              计分与隐私
+            </button>
+          </header>
+
+          <article class="fortune-card" id="fortune-card">
+            <div class="fortune-aura" aria-hidden="true"></div>
+            <div class="fortune-photo-wrap">
+              <div class="fortune-photo">
+                <img id="result-photo" alt="你家宠物的照片" />
+              </div>
+              <span class="fortune-stamp" id="result-sigil" aria-hidden="true">福</span>
+              <span class="fortune-photo-caption">ONLY FOR YOU</span>
+            </div>
+            <div class="fortune-identity">
+              <p class="result-eyebrow">检测完成 · 你家毛孩子的隐藏身份是</p>
+              <p class="result-english" id="result-english">FORTUNE PAW</p>
+              <h2 id="result-name">招财小福星</h2>
+              <p class="result-title" id="result-title"></p>
+              <blockquote class="result-quote" id="result-quote"></blockquote>
+              <div class="keyword-row" id="result-keywords"></div>
+              <p class="result-signature"><span>缘签编号</span><b id="result-signature"></b></p>
+            </div>
+          </article>
+
+          <section class="index-card" aria-labelledby="indices-title">
+            <div class="section-heading-row">
+              <div>
+                <p class="kicker"><span></span> THE BOND INDEX</p>
+                <h2 id="indices-title">你们的缘分指数</h2>
+              </div>
+              <span class="fun-badge">趣味指数</span>
+            </div>
+            <p class="section-note">由 7 个选择换算出的娱乐向指数，不是科学心理测量，也不代表真实命运。</p>
+            <div class="index-list">
+              <div class="index-item">
+                <div class="index-heading">
+                  <span>主宠羁绊值</span>
+                  <strong><span id="result-bond">0</span><small>/100</small></strong>
+                </div>
+                <div class="index-track"><i id="result-bond-bar" role="progressbar" aria-label="主宠羁绊值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></i></div>
+                <p id="result-bond-note"></p>
+              </div>
+              <div class="index-item">
+                <div class="index-heading">
+                  <span>治愈能量值</span>
+                  <strong><span id="result-heal">0</span><small>/100</small></strong>
+                </div>
+                <div class="index-track"><i id="result-heal-bar" role="progressbar" aria-label="治愈能量值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></i></div>
+                <p id="result-heal-note"></p>
+              </div>
+              <div class="index-item">
+                <div class="index-heading">
+                  <span>幸运象征值</span>
+                  <strong><span id="result-luck">0</span><small>/100</small></strong>
+                </div>
+                <div class="index-track"><i id="result-luck-bar" role="progressbar" aria-label="幸运象征值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></i></div>
+                <p id="result-luck-note"></p>
+              </div>
+            </div>
+          </section>
+
+          <section class="report-preview-card" aria-labelledby="relation-title">
+            <p class="kicker"><span></span> WRITTEN IN YOUR ANSWERS</p>
+            <h2 id="relation-title">你们的缘分，藏在这些答案里</h2>
+            <p class="relation-summary" id="relation-summary"></p>
+            <div class="answer-pills" id="answer-pills"></div>
+            <button class="btn btn-report-toggle" type="button" id="toggle-report" aria-expanded="false" aria-controls="report-details">
+              <span>展开完整缘分报告</span>
+              <svg class="icon" aria-hidden="true"><use href="#icon-chevron"></use></svg>
+            </button>
+          </section>
+
+          <div class="report-details" id="report-details" hidden>
+            <section class="report-section">
+              <span class="report-numeral">01</span>
+              <div class="report-section__body">
+                <p class="report-label">它与你的缘分</p>
+                <h2>为什么偏偏是你养了它？</h2>
+                <p id="report-relation"></p>
+              </div>
+            </section>
+            <section class="report-section">
+              <span class="report-numeral">02</span>
+              <div class="report-section__body">
+                <p class="report-label">它带来的好运</p>
+                <h2>那些被生活悄悄兑现的期待</h2>
+                <p id="report-goodluck"></p>
+                <p class="wish-line" id="report-wish"></p>
+              </div>
+            </section>
+            <section class="report-section">
+              <span class="report-numeral">03</span>
+              <div class="report-section__body">
+                <p class="report-label">给铲屎官的生活提醒</p>
+                <h2>今天也为你们做一件小事</h2>
+                <div class="reminder-box">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-sparkle"></use></svg>
+                  <p id="report-reminder"></p>
+                </div>
+              </div>
+            </section>
+            <section class="closing-card">
+              <p class="report-label">你们的专属结尾</p>
+              <blockquote id="report-closing"></blockquote>
+              <span class="closing-flourish" aria-hidden="true">✦</span>
+            </section>
+            <details class="scoring-details">
+              <summary>这份结果是怎么算出来的？</summary>
+              <p>7 道题的每个选项都会为不同命格累计分数，总分最高的命格成为最终结果。同分时按固定命格序号优先，不进行随机抽取。三项指数也由同一组答案换算。</p>
+              <div class="score-ranking" id="score-ranking"></div>
+              <p class="tie-note" id="result-tie-note"></p>
+            </details>
+          </div>
+
+          <div class="share-prompt">
+            <span class="share-prompt__icon" aria-hidden="true"><svg class="icon"><use href="#icon-share"></use></svg></span>
+            <p>把这张命格卡发给朋友，看看谁家的小祖宗最有福气。</p>
+          </div>
+          <p class="result-disclaimer">本报告为趣味娱乐内容，所有“财运、贵人运、好运”等均为积极象征表达，不构成真实命运、财富、健康或心理诊断。</p>
+        </div>
+
+        <div class="result-dock" aria-label="报告操作">
+          <button class="btn btn-primary result-dock__primary" type="button" data-action="poster">
+            <svg class="icon" aria-hidden="true"><use href="#icon-sparkle"></use></svg>
+            <span>生成我的专属命格海报</span>
+          </button>
+          <button class="btn result-dock__secondary" type="button" data-action="retest" aria-label="重新测试">
+            <svg class="icon" aria-hidden="true"><use href="#icon-refresh"></use></svg>
+            <span>重测</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand"><span>宠</span><b>宠缘签</b><small>PAW ORACLE</small></div>
+      <p>趣味娱乐测试，不构成命运、财富、健康或心理诊断。照片仅在你的浏览器本地处理。</p>
+      <button class="text-button" type="button" data-open-info>玩法与隐私说明</button>
+      <p class="footer-copy">© 2026 PAW ORACLE · 把普通日子过成好签</p>
+    </footer>
+
+    <div class="modal" id="poster-modal" aria-hidden="true" hidden>
+      <div class="modal-backdrop" data-close-modal="poster-modal"></div>
+      <div class="modal-panel poster-panel" role="dialog" aria-modal="true" aria-labelledby="poster-modal-title" tabindex="-1">
+        <div class="modal-head">
+          <div>
+            <p class="kicker"><span></span> YOUR FORTUNE CARD</p>
+            <h2 id="poster-modal-title">专属命格卡已生成</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-modal="poster-modal" aria-label="关闭海报预览">
+            <svg class="icon" aria-hidden="true"><use href="#icon-close"></use></svg>
+          </button>
+        </div>
+        <div class="poster-viewport">
+          <div class="poster-loading" id="poster-loading">
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <p>正在绘制你们的命格卡…</p>
+          </div>
+          <img id="poster-image" alt="你的宠物命格分享海报" hidden />
+        </div>
+        <p class="poster-help">手机端若未自动保存，也可以长按上方海报保存到相册。</p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" type="button" id="save-poster">
+            <svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg>
+            <span>保存到手机</span>
+          </button>
+          <button class="btn btn-modal-secondary" type="button" id="share-poster">
+            <svg class="icon" aria-hidden="true"><use href="#icon-share"></use></svg>
+            <span>分享给朋友</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="info-modal" aria-hidden="true" hidden>
+      <div class="modal-backdrop" data-close-modal="info-modal"></div>
+      <div class="modal-panel info-panel" role="dialog" aria-modal="true" aria-labelledby="info-modal-title" tabindex="-1">
+        <div class="modal-head">
+          <div>
+            <p class="kicker"><span></span> HOW IT WORKS</p>
+            <h2 id="info-modal-title">玩法与隐私说明</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-modal="info-modal" aria-label="关闭说明">
+            <svg class="icon" aria-hidden="true"><use href="#icon-close"></use></svg>
+          </button>
+        </div>
+        <div class="info-content">
+          <section>
+            <h3>它是怎么算出来的？</h3>
+            <p>每道题的每个选项会为 8 种命格中的不同命格累计分数。7 题答完后，总分最高者成为结果；如果最高分相同，按固定命格序号优先，不使用随机数，因此同一组答案永远得到同一份报告。</p>
+            <p>主宠羁绊值、治愈能量值、幸运象征值来自另一组本地权重，再归一化到 0–100 分。它们是娱乐向叙事指数，不经过心理量表检验。</p>
+            <p class="soft-note">固定平局优先级：招财小福星 → 贵人锦鲤 → 治愈系天使 → 快乐能量体 → 守护灵搭子 → 成长导师 → 傲娇富贵主 → 混世魔王。</p>
+          </section>
+          <section>
+            <h3>照片会被上传吗？</h3>
+            <p>不会。照片通过浏览器本地文件读取和 Canvas 压缩，仅保存在当前页面内存中，用于预览、结果页和生成海报。本项目没有照片上传接口，也不会把照片写入 localStorage、IndexedDB 或服务器。</p>
+            <p>关闭或刷新页面后，照片会随页面内存释放。若你通过第三方托管部署本页面，请自行确认该托管方没有额外的访问日志或注入脚本。</p>
+          </section>
+          <section>
+            <h3>关于测试边界</h3>
+            <p>“招财”“贵人”“好运”等均为温暖、积极的娱乐象征，不保证真实财富增长，也不预测疾病、寿命或具体事件。请把这份报告当作一次和毛孩子有关的轻松互动。</p>
+          </section>
+        </div>
+        <button class="btn btn-primary btn-full" type="button" data-close-modal="info-modal">知道啦</button>
+      </div>
+    </div>
+
+    <div class="modal" id="confirm-modal" aria-hidden="true" hidden>
+      <div class="modal-backdrop" data-close-modal="confirm-modal"></div>
+      <div class="modal-panel confirm-panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title" tabindex="-1">
+        <span class="confirm-symbol" aria-hidden="true">☾</span>
+        <h2 id="confirm-title">要重新开始吗？</h2>
+        <p>当前照片、答案和这份缘签会从本页清除。重新测试需要再次上传照片。</p>
+        <div class="modal-actions">
+          <button class="btn btn-modal-secondary" type="button" data-close-modal="confirm-modal">先留着这份缘签</button>
+          <button class="btn btn-primary" type="button" id="confirm-reset">重新测试</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <noscript>
+      <div class="noscript-message">这个测试需要启用 JavaScript 才能完成照片预览、答题和生成海报。</div>
+    </noscript>
+  </body>
+</html>
